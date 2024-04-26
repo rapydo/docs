@@ -1,22 +1,23 @@
 *User Guide - Table of Contents*
 
 <!--ts-->
-   * [User Guide](#user-guide)
-      * [Project Configuration](#project-configuration)
-         * [Stacks](#stacks)
-         * [Services](#services)
-         * [Swagger](#swagger)
-         * [Containers builds](#containers-builds)
-         * [Interfaces](#interfaces)
-         * [Multi projects](#multi-projects)
-         * [Production mode](#production-mode)
-         * [SSL Certificates](#ssl-certificates)
-      * [Upgrade to a new version](#upgrade-to-a-new-version)
-      * [Known issues post-upgrade](#known-issues-post-upgrade)
-         * [PostgreSQL fails to start with RAPyDo 2.2](#postgresql-fails-to-start-with-rapydo-22)
-         * [Neo4j fails to start with RAPyDo 2.0](#neo4j-fails-to-start-with-rapydo-20)
+* [User Guide](#user-guide)
+   * [Project Configuration](#project-configuration)
+      * [Stacks](#stacks)
+      * [Services](#services)
+      * [Swagger](#swagger)
+      * [Containers builds](#containers-builds)
+      * [Interfaces](#interfaces)
+      * [Multi projects](#multi-projects)
+      * [Production mode](#production-mode)
+      * [SSL Certificates](#ssl-certificates)
+   * [Upgrade to a new version](#upgrade-to-a-new-version)
+   * [Known issues post-upgrade](#known-issues-post-upgrade)
+      * [PostgreSQL fails to start with RAPyDo 3.0](#postgresql-fails-to-start-with-rapydo-30)
+      * [Neo4j fails to start with RAPyDo 2.0](#neo4j-fails-to-start-with-rapydo-20)
 
-<!-- Added by: mdantonio, at: Gio  8 Dic 2022 10:44:38 CET -->
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: mdantonio, at: Ven 26 Apr 2024 19:12:01 CEST -->
 
 <!--te-->
 
@@ -76,7 +77,6 @@ You can enable production stack by passing `--production/--prod` option to any R
 RAPyDo is containers oriented and this means that every service can be easily added to be tested locally. We tested several services in our projects thus they are already integrated:
 
 - PostgreSQL
-- MariaDB
 - Neo4j
 - Redis
 - RabbitMQ
@@ -98,7 +98,7 @@ All core RAPyDo images are automatically built and pushed to the Docker Hub. You
 
 ### Interfaces
 
-Some interfaces can be launched as containers to help with many services, such as swaggerui to inspect OpenAPI specs and adminer to access PostgreSQL, MySQL/MariaDB.
+Some interfaces can be launched as containers to help with many services, such as swaggerui to inspect OpenAPI specs and adminer to access PostgreSQL.
 
 All interfaces can be executed by using the `rapydo run` command.
 
@@ -205,29 +205,27 @@ Your upgrade procedure is now completed, you are able to start your stack with `
 
 ## Known issues post-upgrade
 
-### PostgreSQL fails to start with RAPyDo 2.2
+### PostgreSQL fails to start with RAPyDo 3.0
 
-RAPyDo 2.2 upgraded the PostgreSQL version from 13.4 to 14.1. Databases created with psq13 are not compatible with psq14 and your container will fail to start with the following error:
+RAPyDo 3.0 upgraded the PostgreSQL version from 14.6 to 15.6. Databases created with psq14 are not compatible with psq15 and your container will fail to start with the following error:
 
   > FATAL:  database files are incompatible with server
   >
-  > DETAIL:  The data directory was initialized by PostgreSQL version 14, which is not compatible with this version 14.1.
+  > DETAIL:  The data directory was initialized by PostgreSQL version 15, which is not compatible with this version 15.6.
 
 Based on the [Official Upgrading Guide](https://www.postgresql.org/docs/11/upgrading.html), to upgrade your database you have to restore a dump of your DB on the new engine. To ease the process RAPyDo includes a utility script (`version_upgrade`) bundled with the PostgreSQL build that automatically performs most of the steps needed to upgrade.  If your database is only used to store sessions you can simply destroy the database volume and re-initialize it. Otherwise you can perform a backup of your current database and then use the `version_upgrade` utility to restore the backup on the new version.
 
 1. Make sure that you have a backup of your database, it will be used to create your new DB
    1. Backups are stored in `data/backup/postgres/`. Make sure to have a very recent backup of your db. You can also list your backups with `rapydo restore postgres`
-   2. If you already have a backup go to step 2, otherwise you have to downgrade your project  (to PostgreSQL 13) to make a backup (you cannot create a backup of your data by using PostgreSQL 14 because the server is unable to start)
-   3. Once downgraded your project to PostgreSQL 13 make a backup with `rapydo backup postgres`
-   4. Upgrade again your project to PostgreSQL 14
-2. You have a recent backup that will be restored to upgrade your database to PostgreSQL 14
+   2. If you already have a backup go to step 2, otherwise you have to downgrade your project (to PostgreSQL 14) to make a backup (you cannot create a backup of your data by using PostgreSQL 15 because the server is unable to start)
+   3. Once downgraded your project to PostgreSQL 14 make a backup with `rapydo backup postgres`
+   4. Upgrade again your project to PostgreSQL 15
+2. You have a recent backup that will be restored to upgrade your database to PostgreSQL 15
    1. Since the PostgreSQL container crashes at startup due to incompatibility between your data and the new engine, you have to start a volatile container to prevent server execution: `rapydo run --debug postgres`
    2. execute `version_upgrade` to start the upgrade process and follow the instructions. The command will list your available backup files, to start the upgrade on a specific backup execute `version_upgrade backupfilename.sql.gz`
 3. Exit the volatile container and start your server
 
-The same issue already happened with RAPyDo 0.9 with the upgrade of PostgreSQL from 12 to 13 and the same will happen again when we will upgrade from version 14 to version 15
-
-
+The same issue already happened with RAPyDo 0.9 with the upgrade of PostgreSQL from 12 to 13 and with RAPydo 2.2 with the upgrade PostgreSQL from 13 to 14. The same will happen again when we will upgrade from version 15 to version 17 (expected with RAPydo 3.1)
 
 ### Neo4j fails to start with RAPyDo 2.0
 

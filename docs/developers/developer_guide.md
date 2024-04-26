@@ -1,23 +1,24 @@
 *Developer Guide - Table of Contents*
 
 <!--ts-->
-   * [Developer Guide](#developer-guide)
-      * [Create a new RAPyDo-based project](#create-a-new-rapydo-based-project)
-      * [Services](#services)
-         * [Enable a service](#enable-a-service)
-         * [Add a new service](#add-a-new-service)
-      * [Backend development](#backend-development)
-         * [Security](#security)
-         * [REST classes](#rest-classes)
-         * [Base endpoints](#base-endpoints)
-         * [Logs](#logs)
-         * [Security Events Logs](#security-events-logs)
-         * [Asynchronous tasks](#asynchronous-tasks)
-         * [Unit tests](#unit-tests)
-         * [Frontend framework](#frontend-framework)
-      * [Upgrade to a new version](#upgrade-to-a-new-version)
+* [Developer Guide](#developer-guide)
+   * [Create a new RAPyDo-based project](#create-a-new-rapydo-based-project)
+   * [Services](#services)
+      * [Enable a service](#enable-a-service)
+      * [Add a new service](#add-a-new-service)
+   * [Backend development](#backend-development)
+      * [Security](#security)
+      * [REST classes](#rest-classes)
+      * [Base endpoints](#base-endpoints)
+      * [Logs](#logs)
+      * [Security Events Logs](#security-events-logs)
+      * [Asynchronous tasks](#asynchronous-tasks)
+      * [Unit tests](#unit-tests)
+      * [Frontend framework](#frontend-framework)
+   * [Upgrade to a new version](#upgrade-to-a-new-version)
 
-<!-- Added by: mdantonio, at: Gio  8 Dic 2022 10:44:38 CET -->
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: mdantonio, at: Ven 26 Apr 2024 19:12:01 CEST -->
 
 <!--te-->
 
@@ -29,7 +30,7 @@ Start by installing requisites and the rapydo-controller (as for the [User guide
 
 1. Make sure you meet the pre-requisites on your machine:
 
-   - Python3.8+ (and `pip`) 
+   - Python3.9+ (and `pip`) 
    - Docker 20+ with Compose v2
    - Git
 
@@ -118,7 +119,7 @@ and `rapydo start` will do the rest
 
 ### Security
 
-RAPyDo supports several backend database to store authentication information: relation databases via sqlalchemy (postgres, mysql, mariadb), neo4j, mongodb. You can set the preferred database by setting the `AUTH_SERVICE` variable. You can also disable the authentication layer at all by setting `AUTH_SERVICE=NO_AUTHENTICATION`.
+RAPyDo supports several backend database to store authentication information: relation databases via sqlalchemy (like postgres) and neo4j. You can set the preferred database by setting the `AUTH_SERVICE` variable. You can also disable the authentication layer at all by setting `AUTH_SERVICE=NO_AUTHENTICATION`.
 
 A number of flags allow to enhance the security layer, included enabling 2-Factor authentication based on TOTP.
 
